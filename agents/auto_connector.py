@@ -8,7 +8,7 @@ def parse_connection_request(message):
     if "imap" in message.lower():
         config["type"] = "imap"
         config["ssl"] = True if "ssl" in message.lower() else False
-        config["user"] = extract_field(message, r"[\w\.]+@[\w\.]+")
+        config["user"] = extract_field(message, r"([\w\.]+@[\w\.]+)")
         config["password"] = extract_field(message, r"heslo\s+je\s+(\S+)")
         config["server"] = extract_field(message, r"server\s+(\S+)")
         config["port"] = int(extract_field(message, r"port\s+(\d+)") or 993)
@@ -16,7 +16,12 @@ def parse_connection_request(message):
 
 def extract_field(text, pattern):
     match = re.search(pattern, text, re.IGNORECASE)
-    return match.group(1) if match else None
+    if not match:
+        return None
+    try:
+        return match.group(1)
+    except IndexError:
+        return None
 
 def handle_message(message):
     config = parse_connection_request(message)
