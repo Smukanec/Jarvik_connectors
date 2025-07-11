@@ -1,6 +1,7 @@
 
 import re
 import json
+import os
 from agents import email_agent
 
 def parse_connection_request(message):
@@ -26,6 +27,7 @@ def extract_field(text, pattern):
 def handle_message(message):
     config = parse_connection_request(message)
     if config.get("type") == "imap":
+        os.makedirs("config", exist_ok=True)
         with open("config/connections.json", "w") as f:
             json.dump(config, f, indent=2)
         return email_agent.connect(config)
