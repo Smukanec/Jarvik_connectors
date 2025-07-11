@@ -45,3 +45,28 @@ odpoved = auto_connector.handle_message(vstup_uzivatele)
 - `create_event(title, start_time, duration)` – vytvoří novou (simulovanou) událost
 
 Poznámka: Toto je zatím lokální mock. Napojení na Google Calendar API je plánované přes `google-api-python-client`.
+
+## 🔧 Instalace a spuštění na Ubuntu 25.04 (Python 3.11)
+
+Příklad postupu na čisté instalaci Ubuntu Server 25.04:
+
+```bash
+sudo apt update
+sudo apt install python3.11 python3.11-venv
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+Po aktivaci virtuálního prostředí je možné spustit testy nebo použít moduly v
+Python skriptech:
+
+```bash
+PYTHONPATH=. pytest      # spuštění testů
+```
+
+```python
+from agents import auto_connector
+auto_connector.handle_message("Pripoj se na IMAP e-mail...")
+```
+
