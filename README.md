@@ -29,6 +29,7 @@ odpoved = auto_connector.handle_message(vstup_uzivatele)
 - Automatické rozpoznání e-mailové konfigurace z textu
 - Připojení k IMAP schránce
 - Výpis počtu zpráv
+- Po spočítání zpráv se spojení uzavře
 - Uložení připojení
 
 ## 📅 Plánované

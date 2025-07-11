@@ -8,6 +8,7 @@ def connect(config):
         mail.select("inbox")
         result, data = mail.search(None, "ALL")
         count = len(data[0].split())
+        mail.logout()
         return f"✅ Připojeno k e-mailu {config['user']}. Počet zpráv ve schránce: {count}"
     except Exception as e:
         return f"❌ Chyba při připojení: {e}"
