@@ -1,6 +1,7 @@
 import unittest
 import os
 import tempfile
+import json
 from unittest import mock
 from agents import auto_connector
 
@@ -53,6 +54,18 @@ class AutoConnectorTest(unittest.TestCase):
             result = auto_connector.handle_message(msg)
         self.assertEqual(result, ["ok"])
         m.assert_called_once_with({"type": "calendar"})
+
+    def test_calendar_message_writes_clean_config(self):
+        msg = "Zobraz kalendar"
+        expected = ["dummy"]
+        path = "config/connections.json"
+        with mock.patch("agents.calendar_agent.list_events", return_value=expected) as m:
+            result = auto_connector.handle_message(msg)
+        self.assertEqual(result, expected)
+        m.assert_called_once_with({"type": "calendar"})
+        with open(path) as f:
+            cfg = json.load(f)
+        self.assertEqual(cfg, {"type": "calendar"})
 
 if __name__ == '__main__':
     unittest.main()
