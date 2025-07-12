@@ -1,0 +1,2 @@
+# Ignore generated connection configurations
+config/*.json
