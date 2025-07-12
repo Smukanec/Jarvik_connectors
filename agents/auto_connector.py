@@ -5,9 +5,15 @@ import shlex
 import base64
 import uuid
 import logging
-from agents import email_agent
+from agents import email_agent, calendar_agent
 
 logging.basicConfig(level=logging.INFO)
+
+# Map service types to handler callables
+SERVICE_REGISTRY = {
+    "email": email_agent.connect,
+    "calendar": calendar_agent.list_events,
+}
 
 try:
     import validators
@@ -21,8 +27,9 @@ except Exception:  # pragma: no cover - fallback for environments without packag
 
 def parse_connection_request(message):
     config = {}
-    if "imap" in message.lower():
-        config["type"] = "imap"
+    lower_msg = message.lower()
+    if "imap" in lower_msg or "email" in lower_msg or "e-mail" in lower_msg:
+        config["type"] = "email"
         tokens = [t.strip(",.;") for t in shlex.split(message)]
 
         config["ssl"] = any(t.lower() == "ssl" for t in tokens)
@@ -57,6 +64,8 @@ def parse_connection_request(message):
         except (StopIteration, IndexError, ValueError):
             pass
         config["port"] = port if port is not None else 993
+    elif "calendar" in lower_msg or "kalendar" in lower_msg or "kalendář" in lower_msg:
+        config["type"] = "calendar"
     return config
 
 
@@ -79,16 +88,20 @@ def store_password(password: str) -> str:
 
 def handle_message(message):
     config = parse_connection_request(message)
-    if config.get("type") == "imap":
-        password = config.pop("password", None)
-        if password:
-            secret_id = store_password(password)
-            logging.info("IMAP password stored with id %s", secret_id)
-            config["password_id"] = secret_id
+    service_type = config.get("type")
+    handler = SERVICE_REGISTRY.get(service_type)
+    if not handler:
+        return "Nepodporovaný typ služby."
 
-        os.makedirs("config", exist_ok=True)
-        with open("config/connections.json", "w") as f:
-            json.dump(config, f, indent=2)
+    password = config.pop("password", None)
+    if password:
+        secret_id = store_password(password)
+        logging.info("%s password stored with id %s", service_type, secret_id)
+        config["password_id"] = secret_id
 
-        return email_agent.connect({**config, "password": password} if password else config)
-    return "Nepodporovaný typ služby."
+    os.makedirs("config", exist_ok=True)
+    with open("config/connections.json", "w") as f:
+        json.dump(config, f, indent=2)
+
+    kwargs = {**config, "password": password} if password is not None else config
+    return handler(kwargs)

@@ -79,3 +79,17 @@ from agents import auto_connector
 auto_connector.handle_message("Pripoj se na IMAP e-mail...")
 ```
 
+## ➕ Registrace dalších agentů
+
+Nového agenta lze přidat přidáním záznamu do slovníku `SERVICE_REGISTRY`
+v souboru `agents/auto_connector.py`. Klíčem je název služby vracený z
+`parse_connection_request` a hodnotou funkce, která přijímá konfiguraci.
+
+```python
+from agents import my_agent
+SERVICE_REGISTRY["chat"] = my_agent.handle
+```
+
+Po rozšíření `parse_connection_request` o daný typ tak `handle_message`
+automaticky zavolá příslušného agenta.
+
