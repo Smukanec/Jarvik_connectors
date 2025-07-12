@@ -11,8 +11,8 @@ logging.basicConfig(level=logging.INFO)
 
 # Map service types to handler callables
 SERVICE_REGISTRY = {
-    "email": email_agent.connect,
-    "calendar": calendar_agent.list_events,
+    "email": lambda cfg: email_agent.connect(cfg),
+    "calendar": lambda cfg: calendar_agent.list_events(cfg),
 }
 
 try:
