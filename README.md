@@ -18,7 +18,8 @@ kalendář.
 ## 📦 Obsah
 
 - `agents/auto_connector.py` – hlavní rozhraní, které rozpozná typ služby a vytvoří konfiguraci.
-- `agents/email_agent.py` – jednoduchý IMAP klient.
+- `agents/email_agent.py` – jednoduchý IMAP klient vracející strukturovaný
+  výsledek `{"status": "...", "mail_count": ...}`.
 - `config/connections.json` – uložené připojení.
   Soubor je vygenerován při volání `handle_message` a je uložen v adresáři `config/`.
 - `secrets/token.json` – připraveno pro případné API tokeny (např. Google Calendar).
