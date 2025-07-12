@@ -25,8 +25,9 @@ class AutoConnectorTest(unittest.TestCase):
             "server mail.example.com port 993 SSL heslo je tajne123"
         )
         path = "config/connections.json"
-        with mock.patch("agents.email_agent.connect", return_value="ok"):
+        with mock.patch("agents.email_agent.connect", return_value="ok") as m:
             auto_connector.handle_message(msg)
+            m.assert_called_once()
         self.assertTrue(os.path.exists(path))
 
     def test_invalid_server_name(self):

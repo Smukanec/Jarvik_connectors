@@ -49,13 +49,14 @@ class EmailAgentTest(unittest.TestCase):
             "server mail.example.com port 993 SSL heslo je tajne123"
         )
         path = "config/connections.json"
-        with mock.patch("agents.email_agent.connect", return_value="ok"):
+        with mock.patch("agents.email_agent.connect", return_value="ok") as m:
             auto_connector.handle_message(msg)
             with open(path) as f:
                 first = json.load(f)
             auto_connector.handle_message(msg)
             with open(path) as f:
                 second = json.load(f)
+            self.assertEqual(m.call_count, 2)
         first.pop("password_id", None)
         second.pop("password_id", None)
         self.assertEqual(first, second)
