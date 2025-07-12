@@ -29,5 +29,21 @@ class AutoConnectorTest(unittest.TestCase):
             auto_connector.handle_message(msg)
         self.assertTrue(os.path.exists(path))
 
+    def test_invalid_server_name(self):
+        msg = (
+            "Pripoj se na IMAP e-mail test@firma.cz "
+            "server invalid_server port 993 SSL heslo je tajne123"
+        )
+        cfg = auto_connector.parse_connection_request(msg)
+        self.assertIsNone(cfg.get("server"))
+
+    def test_invalid_port(self):
+        msg = (
+            "Pripoj se na IMAP e-mail test@firma.cz "
+            "server mail.example.com port 99999 SSL heslo je tajne123"
+        )
+        cfg = auto_connector.parse_connection_request(msg)
+        self.assertEqual(cfg.get("port"), 993)
+
 if __name__ == '__main__':
     unittest.main()
