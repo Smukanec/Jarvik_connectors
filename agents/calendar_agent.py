@@ -1,7 +1,14 @@
 
 from datetime import datetime, timedelta
 
-def list_events():
+
+def list_events(config=None):
+    """Return simulated calendar events.
+
+    The optional ``config`` argument is ignored but allows the function to be
+    used with :mod:`agents.auto_connector`, which always passes a configuration
+    dictionary to handler callables.
+    """
     # Dummy funkce – simulace událostí
     now = datetime.now()
     return [

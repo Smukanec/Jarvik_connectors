@@ -45,5 +45,13 @@ class AutoConnectorTest(unittest.TestCase):
         cfg = auto_connector.parse_connection_request(msg)
         self.assertEqual(cfg.get("port"), 993)
 
+    def test_calendar_request_calls_list_events(self):
+        msg = "Zobraz kalendar"
+        m = mock.Mock(return_value=["ok"])
+        with mock.patch.dict(auto_connector.SERVICE_REGISTRY, {"calendar": m}):
+            result = auto_connector.handle_message(msg)
+        self.assertEqual(result, ["ok"])
+        m.assert_called_once_with({"type": "calendar"})
+
 if __name__ == '__main__':
     unittest.main()
