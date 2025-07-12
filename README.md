@@ -7,6 +7,14 @@ Tento modul umožňuje Jarvikovi automaticky zpracovat přirozený text typu:
 Připoj se na e-mail jiri@firma.cz, server mail.firma.cz, port 993, SSL, heslo je tajne123.
 ```
 
+Tento projekt neobsahuje žádné modely strojového učení. Vstupy v přirozeném jazyce
+jsou parsovány pomocí regulárních výrazů v souboru `agents/auto_connector.py`.
+
+## 🛠️ How it works
+`handle_message` → analyzuje text přes regexy v `parse_connection_request` →
+podle výsledku spustí `email_agent.connect` nebo připraví konfiguraci pro
+kalendář.
+
 ## 📦 Obsah
 
 - `agents/auto_connector.py` – hlavní rozhraní, které rozpozná typ služby a vytvoří konfiguraci.
