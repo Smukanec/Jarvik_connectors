@@ -59,7 +59,7 @@ class AutoConnectorTest(unittest.TestCase):
         msg = "Zobraz kalendar"
         expected = ["dummy"]
         path = "config/connections.json"
-        with mock.patch("agents.calendar_agent.list_events", return_value=expected) as m:
+        with mock.patch.object(auto_connector.calendar_service, "list_events", return_value=expected) as m:
             result = auto_connector.handle_message(msg)
         self.assertEqual(result, expected)
         m.assert_called_once_with({"type": "calendar"})

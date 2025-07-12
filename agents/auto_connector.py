@@ -5,14 +5,17 @@ import shlex
 import base64
 import uuid
 import logging
-from agents import email_agent, calendar_agent
+from agents import email_agent
+from agents.calendar_agent import CalendarAgent
 
 logging.basicConfig(level=logging.INFO)
 
 # Map service types to handler callables
+calendar_service = CalendarAgent()
+
 SERVICE_REGISTRY = {
     "email": lambda cfg: email_agent.connect(cfg),
-    "calendar": lambda cfg: calendar_agent.list_events(cfg),
+    "calendar": lambda cfg: calendar_service.list_events(cfg),
 }
 
 try:
